@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({super.key});
+  const AuthForm({super.key, required this.submitFn});
+
+  final void Function(String email, String password, String username,
+      bool isLogin, BuildContext context) submitFn;
 
   @override
   State<AuthForm> createState() => _AuthFormState();
@@ -19,9 +22,13 @@ class _AuthFormState extends State<AuthForm> {
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState!.save();
-      print(_userEmail);
-      print(_userName);
-      print(_userPassword);
+      widget.submitFn(
+        _userEmail.trim(),
+        _userName.trim(),
+        _userPassword.trim(),
+        _isLogin,
+        context,
+      );
     }
   }
 
@@ -51,18 +58,18 @@ class _AuthFormState extends State<AuthForm> {
                         const InputDecoration(labelText: 'Email address'),
                     onSaved: (newValue) => _userEmail = newValue!,
                   ),
-                  if(!_isLogin)
-                  TextFormField(
-                    key: const ValueKey('Username'),
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 4) {
-                        return 'Please enter at least 4 characters.';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(labelText: 'Username'),
-                    onSaved: (newValue) => _userName = newValue!,
-                  ),
+                  if (!_isLogin)
+                    TextFormField(
+                      key: const ValueKey('Username'),
+                      validator: (value) {
+                        if (value!.isEmpty || value.length < 4) {
+                          return 'Please enter at least 4 characters.';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(labelText: 'Username'),
+                      onSaved: (newValue) => _userName = newValue!,
+                    ),
                   TextFormField(
                     key: const ValueKey('Password'),
                     validator: (value) {
