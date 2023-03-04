@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-
 import '../widgets/auth/auth_form.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 
-  void _submitAuthForm(String email, String password, String username,
+  void _submitAuthForm(String email, String username, String password,
       bool isLogin, BuildContext context) async {
     UserCredential authResult;
 
@@ -34,8 +33,8 @@ class _AuthScreenState extends State<AuthScreen> {
             .collection('users')
             .doc(authResult.user!.uid)
             .set({
-          'username': username,
           'email': email,
+          'username': username,
         });
       }
     } on PlatformException catch (e) {

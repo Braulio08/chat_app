@@ -1,6 +1,9 @@
+import '../widgets/chat/new_message.dart';
+
+import '../widgets/chat/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -10,38 +13,38 @@ class ChatScreen extends StatelessWidget {
     final dynamic appBar = AppBar(
       title: const Text('Your chat?'),
       centerTitle: true,
+      actions: [
+        PopupMenuButton(
+          onSelected: (value) {
+            if (value == 'logout') {
+              FirebaseAuth.instance.signOut();
+            }
+          },
+          itemBuilder: (_) => [
+            PopupMenuItem(
+              value: 'logout',
+              child: Row(
+                children: const [
+                  Icon(Icons.exit_to_app),
+                  SizedBox(width: 8),
+                  Text('Logout'),
+                ],
+              ),
+            ),
+          ],
+          icon: const Icon(Icons.more_vert),
+        ),
+      ],
     );
     return Scaffold(
       appBar: appBar,
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('chats/FZbNxD8iEq5cxtRUtPo4/messages')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final documents = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (context, index) => Container(
-              padding: const EdgeInsets.all(8),
-              child: Text(documents[index]['text']),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          FirebaseFirestore.instance
-              .collection('chats/FZbNxD8iEq5cxtRUtPo4/messages')
-              .add({
-                'text': 'This was added by clicking the button xd'
-              });
-        },
-        child: const Icon(Icons.add),
+      body: Container(
+        child: Column(
+          children: const [
+            Expanded(child: Messages()),
+            NewMessage(),
+          ],
+        ),
       ),
     );
   }
