@@ -18,7 +18,11 @@ class _UserImagePickerState extends State<UserImagePicker> {
   void _pickImage() async {
     final ImagePicker picker = ImagePicker();
     // Pick an image
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxWidth: 150,
+    );
     if (image != null) {
       setState(() {
         _profileImage = File(image.path);

@@ -18,7 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 
-  void _submitAuthForm(File image, String email, String username,
+  void _submitAuthForm(File image, String email, String userName,
       String password, bool isLogin, BuildContext context) async {
     UserCredential authResult;
 
@@ -40,12 +40,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
         await ref.putFile(image).whenComplete(() => null);
 
+        final url = await ref.getDownloadURL();
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user!.uid)
             .set({
           'email': email,
-          'username': username,
+          'userName': userName,
+          'imageUrl': url,
         });
       }
     } on PlatformException catch (e) {
