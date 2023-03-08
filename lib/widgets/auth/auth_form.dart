@@ -8,8 +8,8 @@ class AuthForm extends StatefulWidget {
 
   final bool isLoading;
 
-  final void Function(File image, String email, String password, String username,
-      bool isLogin, BuildContext context) submitFn;
+  final void Function(File? image, String email, String password,
+      String username, bool isLogin, BuildContext context) submitFn;
 
   @override
   State<AuthForm> createState() => _AuthFormState();
@@ -21,7 +21,7 @@ class _AuthFormState extends State<AuthForm> {
   String _userEmail = '';
   String _userName = '';
   String _userPassword = '';
-  var _userImageFile;
+  File? _userImageFile;
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
@@ -70,6 +70,9 @@ class _AuthFormState extends State<AuthForm> {
                   if (!_isLogin) UserImagePicker(imagePickFn: _pickedImage),
                   TextFormField(
                     key: const ValueKey('email'),
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     validator: (value) {
                       if (value!.isEmpty || !value.contains('@')) {
                         return 'Please enter a valid email address.';
@@ -83,7 +86,10 @@ class _AuthFormState extends State<AuthForm> {
                   ),
                   if (!_isLogin)
                     TextFormField(
-                      key: const ValueKey('Username'),
+                      key: const ValueKey('username'),
+                      autocorrect: true,
+                      textCapitalization: TextCapitalization.words,
+                      enableSuggestions: false,
                       validator: (value) {
                         if (value!.isEmpty || value.length < 4) {
                           return 'Please enter at least 4 characters.';
@@ -94,7 +100,7 @@ class _AuthFormState extends State<AuthForm> {
                       onSaved: (newValue) => _userName = newValue!,
                     ),
                   TextFormField(
-                    key: const ValueKey('Password'),
+                    key: const ValueKey('password'),
                     validator: (value) {
                       if (value!.isEmpty || value.length < 7) {
                         return 'Password must be at least 7 characters long.';

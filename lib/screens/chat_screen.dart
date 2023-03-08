@@ -15,6 +15,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
+    super.initState();
     final fbm = FirebaseMessaging.instance;
     fbm.requestPermission();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -37,18 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
       }
       return;
     });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      print('Got a message whilst in the foreground!');
-      if (message.notification != null) {
-        print('Notification Title: ${message.notification?.title}');
-        print('Notification Body: ${message.notification?.body}');
-      }
-      return;
-    });
-    // fbm.subscribeToTopic('chat');
-    super.initState();
+    fbm.subscribeToTopic('chat');
   }
 
   @override
